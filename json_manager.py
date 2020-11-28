@@ -26,7 +26,5 @@ class JsonManager:
         code = code['code']
 
         ploads = JsonManager.load_json_from_file(ploads_json)
-
         ploads['ploads']['POST_ploads']['code'] = code
-
         JsonManager.dump_into_json_file(ploads_json, ploads)
