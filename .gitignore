@@ -130,6 +130,3 @@ dmypy.json
 
 # Jsons with private data
 jsons/
-
-
-.idea/
