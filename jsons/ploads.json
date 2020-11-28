@@ -1,0 +1,17 @@
+{
+  "ploads": {
+    "GET_ploads": {
+      "client_id": "72d611916d49401f889af45f09e499b4",
+      "response_type": "code",
+      "redirect_uri": "http://localhost:8000/callback",
+      "scope": "playlist-modify-private"
+    },
+    "POST_ploads": {
+      "grant_type": "authorization_code",
+      "code": "AQDRTELHKNJo9obwLI6asFARScR2uZ3mhZmHthxOpXdgBTpGsuomnIZQjcA9UPfwXG3Fhy5rs3btf3kss4NMSDbynn0R59xal5oRkHsbO4JkNMsba6VNjH6SYpULNelCYXPfoEZgyWjPeajHsRYzi1bKrn4v_dRB_K79mRfBSRF7bP35WziweJgTvybbNhudEm_f-CO0YjuImnE",
+      "redirect_uri": "https://www.spotify.com/",
+      "client_id": "72d611916d49401f889af45f09e499b4",
+      "client_secret": "05fbeed02beb4e489b035ab007942128"
+    }
+  }
+}
