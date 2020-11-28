@@ -129,5 +129,7 @@ dmypy.json
 .pyre/
 
 # Jsons with private data
-
 jsons/
+
+
+.idea/
