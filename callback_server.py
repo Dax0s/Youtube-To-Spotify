@@ -1,7 +1,8 @@
-import json_manager
+from json_manager import JsonManager
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
+
 
 class Serv(BaseHTTPRequestHandler):
     code = ''
@@ -12,8 +13,8 @@ class Serv(BaseHTTPRequestHandler):
 
             code_json = {"code": self.code}
 
-            json_manager.JsonManager.dump_into_json_file('jsons/code.json', code_json)
-            json_manager.JsonManager.move_code_to_ploads('jsons/code.json', 'jsons/ploads.json')
+            JsonManager.dump_into_json_file('jsons/code.json', code_json)
+            JsonManager.move_code_to_ploads('jsons/ploads.json', 'jsons/code.json')
 
             HttpServer.shutdown_server()
 
@@ -28,7 +29,7 @@ class HttpServer():
     code = ''
 
     httpd = HTTPServer(('localhost', 8000), Serv)
-    server_thread = threading.Thread(target=httpd.serve_forever)
+    shutdown_thread = threading.Thread(target=httpd.shutdown)
 
     @classmethod
     def start_server(cls):
@@ -36,4 +37,4 @@ class HttpServer():
 
     @classmethod
     def shutdown_server(cls):
-        raise SystemExit()
+        cls.shutdown_thread.start()
