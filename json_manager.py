@@ -25,25 +25,27 @@ class JsonManager:
         code = JsonManager.load_json_from_file(code_json)['code']
 
         ploads = JsonManager.load_json_from_file(ploads_json)
-        ploads['ploads']['POST_ploads']['code']['code'] = code
+        ploads['using_code']['code'] = code
         JsonManager.dump_into_json_file(ploads_json, ploads)
 
     @staticmethod
     def move_ids_to_ploads(ploads_json, ids_json):
         ids = JsonManager.load_json_from_file(ids_json)
-        ploads = JsonManager.load_json_from_file(ploads_json)['ploads']['POST_ploads']
+        code_ploads = JsonManager.load_json_from_file(ploads_json)['using_code']
+        refresh_token_ploads = JsonManager.load_json_from_file(ploads_json)['using_refresh_token']
 
-        ploads['code']['client_id'] = ids['client_id']
-        ploads['code']['secret_id'] = ids['secret_id']
+        code_ploads['client_id'] = ids['client_id']
+        code_ploads['secret_id'] = ids['secret_id']
 
-        ploads['token']['client_id'] = ids['client_id']
-        ploads['token']['secret_id'] = ids['secret_id']
+        refresh_token_ploads['client_id'] = ids['client_id']
+        refresh_token_ploads['secret_id'] = ids['secret_id']
 
     @staticmethod
     def move_token_to_ploads(ploads_json, tokens_json):
-        token = JsonManager.load_json_from_file(tokens_json)['refresh_token']
+        tokens = JsonManager.load_json_from_file(tokens_json)
 
         ploads = JsonManager.load_json_from_file(ploads_json)
-        ploads['ploads']['POST_ploads']['token']['refresh_token'] = token
+        ploads['using_refresh_token']['refresh_token'] = tokens['refresh_token']
+        ploads['using_access_token']['access_token'] = tokens['access_token']
 
         JsonManager.dump_into_json_file(ploads_json, ploads)

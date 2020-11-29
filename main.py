@@ -1,31 +1,11 @@
-import callback_server
-from json_manager import JsonManager
 from spotify_requests import SpotifyRequests
-
-import requests
-import webbrowser
+from json_manager import JsonManager
 
 
-
-SpotifyRequests.get_token('jsons/ploads.json', 'jsons/tokens.json')
-
-#
-# ploads = JsonManager.load_json_from_file('jsons/ploads.json')
-#
-# response = requests.get('https://accounts.spotify.com/authorize', params=ploads['ploads']['GET_ploads'])
-# webbrowser.open(response.url)
-#
-# callback_server.HttpServer.start_server()
-#
-# ploads = JsonManager.load_json_from_file('jsons/ploads.json')
-#
-# response1 = requests.post('https://accounts.spotify.com/api/token', data=ploads['ploads']['POST_ploads'])
-#
-# print(response1.status_code)
-#
-# JsonManager.dump_into_json_file('jsons/response_json.json', response1.json())
+ploads_json, tokens_json, playlists_json, user_info_json = 'jsons/ploads.json', 'jsons/tokens.json', 'jsons/users_playlists.json', 'jsons/user_info.json'
 
 
+SpotifyRequests.get_token(ploads_json, tokens_json)
 
-# with open('response.json', 'w') as f:
-#     json.dump(response1.json(), f, indent=2)
+SpotifyRequests.get_user_info(tokens_json, user_info_json)
+SpotifyRequests.check_if_a_playlist_exists(ploads_json, playlists_json, "Chill")
