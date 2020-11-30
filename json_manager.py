@@ -47,5 +47,14 @@ class JsonManager:
         ploads = JsonManager.load_json_from_file(ploads_json)
         ploads['using_refresh_token']['refresh_token'] = tokens['refresh_token']
         ploads['using_access_token']['access_token'] = tokens['access_token']
+        ploads['using_authorization_token']['Authorization'] = f"Bearer {tokens['access_token']}"
 
+        JsonManager.dump_into_json_file(ploads_json, ploads)
+
+    @staticmethod
+    def move_user_id_to_ploads(ploads_json, user_info_json):
+        ploads = JsonManager.load_json_from_file(ploads_json)
+        user_id = JsonManager.load_json_from_file(user_info_json)['id']
+
+        ploads['using_access_token']['user_id'] = user_id
         JsonManager.dump_into_json_file(ploads_json, ploads)

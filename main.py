@@ -7,5 +7,10 @@ ploads_json, tokens_json, playlists_json, user_info_json = 'jsons/ploads.json', 
 
 SpotifyRequests.get_token(ploads_json, tokens_json)
 
-SpotifyRequests.get_user_info(tokens_json, user_info_json)
-SpotifyRequests.check_if_a_playlist_exists(ploads_json, playlists_json, "Chill")
+# for i in range(50):
+#     SpotifyRequests.create_a_playlist(ploads_json, user_info_json, playlists_json, f"Test Playlist{i}")
+
+# for i in range(50):
+#     SpotifyRequests.unfollow_user_playlist(ploads_json, playlists_json, f"Test Playlist{i}")
+
+# SpotifyRequests.print_user_playlists(ploads_json, playlists_json)

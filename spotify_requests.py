@@ -63,27 +63,28 @@ class SpotifyRequests:
 
     @staticmethod
     def get_user_info(ploads_json, user_info_json):
-        token = {"access_token": JsonManager.load_json_from_file(ploads_json)['access_token'], "limit": 50}
+        ploads = JsonManager.load_json_from_file(ploads_json)['using_access_token']
 
-        response = requests.get('https://api.spotify.com/v1/me', params=token)
+        response = requests.get('https://api.spotify.com/v1/me', params=ploads)
         print(f"get_user_info {response.status_code:18}")
 
         JsonManager.dump_into_json_file(user_info_json, response.json())
+        JsonManager.move_user_id_to_ploads(ploads_json, user_info_json)
 
     @staticmethod
-    def get_user_playlists(ploads_json, playlists_json):
+    def get_user_playlists(ploads_json, playlist_json):
         ploads = JsonManager.load_json_from_file(ploads_json)['using_access_token']
 
         response = requests.get('https://api.spotify.com/v1/me/playlists', params=ploads)
         print(f"get_users_playlists {response.status_code:12}")
 
-        JsonManager.dump_into_json_file(playlists_json, response.json())
+        JsonManager.dump_into_json_file(playlist_json, response.json())
 
     @staticmethod
-    def check_if_a_playlist_exists(ploads_json, playlists_json, playlist_name):
-        SpotifyRequests.get_user_playlists(ploads_json, playlists_json)
+    def check_if_a_playlist_exists(ploads_json, playlist_json, playlist_name):
+        SpotifyRequests.get_user_playlists(ploads_json, playlist_json)
 
-        playlists = JsonManager.load_json_from_file(playlists_json)
+        playlists = JsonManager.load_json_from_file(playlist_json)
 
         exists = False
         for playlist in playlists['items']:
@@ -92,12 +93,61 @@ class SpotifyRequests:
             if playlist_name == name:
                 exists = True
 
-        print(exists)
         return exists
 
     @staticmethod
-    def create_a_playlist(playlists_json, playlist_name):
-        if SpotifyRequests.check_if_a_playlist_exists(playlists_json, playlist_name):
+    def create_a_playlist(ploads_json, user_info_json, playlist_json, playlist_name):
+        if SpotifyRequests.check_if_a_playlist_exists(ploads_json, playlist_json, playlist_name):
             print("Playlist already exists")
             return None
 
+        SpotifyRequests.get_user_info(ploads_json, user_info_json)
+
+        ploads = JsonManager.load_json_from_file(ploads_json)
+        user_id = ploads['using_access_token']['user_id']
+        ploads['create_playlist_body']['name'] = playlist_name
+
+        data = JsonManager.dump_into_json_string(ploads['create_playlist_body'])
+        headers = ploads['using_authorization_token']
+
+        response = requests.post(f'https://api.spotify.com/v1/users/{user_id}/playlists', data=data, headers=headers)
+        print(f"create_a_playlist {response.status_code:14}")
+
+    @staticmethod
+    def print_user_playlists(ploads_json, playlist_json):
+        SpotifyRequests.get_user_playlists(ploads_json, playlist_json)
+
+        playlists = JsonManager.load_json_from_file(playlist_json)
+
+        for i in range(len(playlists['items'])):
+            print((i + 1), playlists['items'][i]['name'])
+
+    @staticmethod
+    def get_user_playlist(ploads_json, playlist_json, playlist_name):
+        if False == SpotifyRequests.check_if_a_playlist_exists(ploads_json, playlist_json, playlist_name):
+            print("Error: Playlist doesn't exist")
+            return None
+
+        playlists = JsonManager.load_json_from_file(playlist_json)
+
+        for playlist in playlists['items']:
+            if playlist['name'] == playlist_name:
+                JsonManager.dump_into_json_file('jsons/playlist.json', playlist)
+
+                return playlist
+
+    @staticmethod
+    def unfollow_user_playlist(ploads_json, playlist_json, playlist_name):
+        if False == SpotifyRequests.check_if_a_playlist_exists(ploads_json, playlist_json, playlist_name):
+            print("Error: Playlist doesn't exist")
+            return None
+
+        playlist = SpotifyRequests.get_user_playlist(ploads_json, playlist_json, playlist_name)
+        ploads = JsonManager.load_json_from_file(ploads_json)['using_authorization_token']
+
+        playlist_id = playlist['id']
+
+        url = f'https://api.spotify.com/v1/playlists/{playlist_id}/followers'
+        headers = ploads
+
+        response = requests.delete(url, headers=headers)
