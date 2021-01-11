@@ -63,6 +63,7 @@ class SpotifyRequests:
 
     @staticmethod
     def get_user_info(ploads_json, user_info_json):
+
         ploads = JsonManager.load_json_from_file(ploads_json)['using_access_token']
 
         response = requests.get('https://api.spotify.com/v1/me', params=ploads)
@@ -86,14 +87,13 @@ class SpotifyRequests:
 
         playlists = JsonManager.load_json_from_file(playlist_json)
 
-        exists = False
         for playlist in playlists['items']:
             name = playlist['name']
 
             if playlist_name == name:
-                exists = True
+                return True
 
-        return exists
+        return False
 
     @staticmethod
     def create_a_playlist(ploads_json, user_info_json, playlist_json, playlist_name):
@@ -107,11 +107,13 @@ class SpotifyRequests:
         user_id = ploads['using_access_token']['user_id']
         ploads['create_playlist_body']['name'] = playlist_name
 
+        url = f'https://api.spotify.com/v1/users/{user_id}/playlists'
         data = JsonManager.dump_into_json_string(ploads['create_playlist_body'])
         headers = ploads['using_authorization_token']
 
-        response = requests.post(f'https://api.spotify.com/v1/users/{user_id}/playlists', data=data, headers=headers)
+        response = requests.post(url, data=data, headers=headers)
         print(f"create_a_playlist {response.status_code:14}")
+
 
     @staticmethod
     def print_user_playlists(ploads_json, playlist_json):
@@ -151,3 +153,5 @@ class SpotifyRequests:
         headers = ploads
 
         response = requests.delete(url, headers=headers)
+
+        print(f"unfollow_user_playlist {response.status_code:9}")
